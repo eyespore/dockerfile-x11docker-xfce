@@ -24,7 +24,9 @@
 #
 # Look at x11docker --help for further options.
 
-FROM debian:bullseye
+# FROM debian:bullseye
+# FROM debian:bookworm
+FROM dtcooper/raspberrypi-os:bookworm
 
 RUN apt-get update && apt-mark hold iptables && \
     env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
