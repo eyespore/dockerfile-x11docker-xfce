@@ -34,7 +34,7 @@ This project uses a two-stage Dockerfile structure. To build a complete image, y
 ### **Example**
 
 ```
-docker build -t xfce:base-v1.0 -f Dockerfile.base-v1.0 .
+docker build -t xfce:base-v1.0 -f Dockerfile.base .
 docker build -t xfce:raspberrypi-bookworm-v1.0 -f Dockerfile.raspberrypi-bookworm-v1.0 .
 ```
 
