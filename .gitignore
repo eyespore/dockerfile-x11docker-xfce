@@ -3,3 +3,4 @@ build-base.sh
 build-pi.sh
 launch.sh
 xenv
+.env

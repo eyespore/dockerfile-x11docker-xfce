@@ -26,16 +26,16 @@ x11docker \
   --runasroot="echo $(logname):${USER_PASSWORD:-1234} | chpasswd" \
   -- \
   --hostname=xfce-desktop \
-  --port=${SSHD_PORT:-8022}:22 \
+  --publish=${SSHD_PORT:-8022}:22 \
   --volume=$PWD/config/xfce-sshd.conf:/etc/ssh/sshd_config.d/xfce-sshd.conf \
-  --port=3389:3389 \
+  --publish=3389:3389 \
   --volume=$PWD/config/sesman.ini:/etc/xrdp/sesman.ini \
   --volume=$PWD/config/startwm.sh:/etc/xrdp/startwm.sh \
   --volume=$PWD/config/xrdp.ini:/etc/xrdp/xrdp.ini \
   --volume=$PWD/config/xorg-xdummy.conf:/etc/X11/xrdp/xorg-xdummy.conf \
   --volume=$PWD/config/xdummy-xorg-startup.sh:/etc/xrdp/xdummy-xorg-startup.sh \
-  --port=5950:5950 \
-  --port=0.0.0.0:${X11VNC_RFBPORT:-5900}:${X11VNC_RFBPORT:-5900} \
+  --publish=5950:5950 \
+  --publish=0.0.0.0:${X11VNC_RFBPORT:-5900}:${X11VNC_RFBPORT:-5900} \
   --tmpfs=/dev/shm \
   -- \
   xfce:latest
