@@ -3,6 +3,11 @@ FROM xfce:base
 # Update package index
 RUN apt-get update
 
+ENV DEBIAN_FRONTEND=noninteractive
+
+ARG PROXY=""
+ENV http_proxy=$PROXY https_proxy=$PROXY
+
 # Install systemd as the init system
 RUN apt-get install -y systemd-sysv
 
@@ -76,3 +81,5 @@ RUN apt-get install -y \
 
 # Install input method framework (ibus + libpinyin for Chinese input)
 RUN apt-get install -y ibus ibus-libpinyin
+
+ENV DEBIAN_FRONTEND= http_proxy= https_proxy=

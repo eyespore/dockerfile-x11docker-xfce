@@ -28,6 +28,9 @@
 # FROM debian:bookworm
 FROM dtcooper/raspberrypi-os:bookworm
 
+ARG PROXY=""
+ENV http_proxy=$PROXY https_proxy=$PROXY
+
 RUN apt-get update && apt-mark hold iptables && \
     env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       dbus-x11 \
@@ -68,6 +71,9 @@ RUN apt-get update && apt-mark hold iptables && \
       mesa-utils \
       mesa-utils-extra && \
     sed -i 's%<property name="ThemeName" type="string" value="Xfce"/>%<property name="ThemeName" type="string" value="Raleigh"/>%' /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+
+# reset proxy environment variable
+ENV http_proxy= https_proxy=
 
 # disable xfwm4 compositing if X extension COMPOSITE is missing and no config file exists
 RUN Configfile="~/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml" && \
