@@ -78,8 +78,24 @@ RUN apt-get update && apt-get install -y dirmngr \
         fonts-noto-cjk \
         fonts-noto-color-emoji
 
-# Install VSCode manually
-# COPY resources/code_1.105.1-1760482225_arm64.deb /tmp/vscode.deb
-# RUN apt-get install -y /tmp/vscode.deb && rm /tmp/vscode.deb
+# Install VSCode
+RUN echo "code code/add-microsoft-repo boolean true" | sudo debconf-set-selections
+RUN apt-get install gpg
+RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && \
+        install -D -o root -g root -m 644 microsoft.gpg /usr/share/keyrings/microsoft.gpg && \
+        rm -f microsoft.gpg
+
+RUN echo "Types: deb\n\
+URIs: https://packages.microsoft.com/repos/code\n\
+Suites: stable\n\
+Components: main\n\
+Architectures: amd64,arm64,armhf\n\
+Signed-By: /usr/share/keyrings/microsoft.gpg\n\
+" > /etc/apt/sources.list.d/vscode.sources
+
+RUN apt-get install apt-transport-https
+RUN apt-get update
+# or code-insiders
+RUN apt-get install code
 
 ENV DEBIAN_FRONTEND= http_proxy= https_proxy=
