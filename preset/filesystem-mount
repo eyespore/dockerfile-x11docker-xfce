@@ -1,0 +1,8 @@
+--share=$HOME/Mounts
+--share=$HOME/Desktop/Downloads
+--share=$HOME/Desktop/Videos
+--share=$HOME/Desktop/Documents
+--share=$HOME/Desktop/Pictures
+--share=$HOME/Desktop/Music
+--share=/mnt
+--home

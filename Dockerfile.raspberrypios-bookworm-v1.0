@@ -24,26 +24,26 @@ RUN apt-get install -y libglx-mesa0 libdrm2
 RUN apt-get install -y xserver-xorg-video-dummy
 
 # Add Mozilla APT repository and configure package priority
-RUN install -d -m 0755 /etc/apt/keyrings && \
-    wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc > /dev/null && \
-    echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list > /dev/null && \
-    echo "Package: *\n\
-    Pin: origin packages.mozilla.org\n\
-    Pin-Priority: 1000" | sudo tee /etc/apt/preferences.d/mozilla
+# RUN install -d -m 0755 /etc/apt/keyrings && \
+#     wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc > /dev/null && \
+#     echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list > /dev/null && \
+#     echo "Package: *\n\
+#     Pin: origin packages.mozilla.org\n\
+#     Pin-Priority: 1000" | sudo tee /etc/apt/preferences.d/mozilla
 
 # Install Firefox and its related runtime dependencies
-RUN apt-get update && apt-get install -y dirmngr \
-    apulse \
-        ca-certificates \
-        ffmpeg \
-        firefox \
-        hicolor-icon-theme \
-        libasound2 \
-        libgl1-mesa-dri \
-        libgl1-mesa-glx \
-        fonts-noto \
-        fonts-noto-cjk \
-        fonts-noto-color-emoji
+# RUN apt-get update && apt-get install -y dirmngr \
+#     apulse \
+#         ca-certificates \
+#         ffmpeg \
+#         firefox \
+#         hicolor-icon-theme \
+#         libasound2 \
+#         libgl1-mesa-dri \
+#         libgl1-mesa-glx \
+#         fonts-noto \
+#         fonts-noto-cjk \
+#         fonts-noto-color-emoji
 
 # VNC components (x11vnc server, noVNC, stunnel for TLS support, tigervnc)
 RUN apt-get install -y \

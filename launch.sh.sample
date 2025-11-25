@@ -1,0 +1,41 @@
+#!/bin/bash
+if [ -f .env ]; then
+    set -a
+    source .env
+    set +a
+fi
+
+# make sure pulseaudio process running 
+pulseaudio --start
+
+# run xfce desktop
+x11docker \
+  --xc=no \
+  --cap-default \
+  --pulseaudio \
+  --desktop \
+  --name=xfce-desktop \
+  --printenv=$HOME/.config/x11docker/xenv \
+  --network=bridge \
+  --init=systemd \
+  --sudouser=nopasswd \
+  --ipc=host \
+  --xtest=yes \
+  --runasuser="ibus-daemon -drx" \
+  --runasuser="x11vnc -forever -repeat -rfbport ${X11VNC_RFBPORT:-5900} -passwd ${X11VNC_PASSWD:-1234} \&" \
+  --runasroot="echo $(logname):${USER_PASSWORD:-1234} | chpasswd" \
+  -- \
+  --hostname=xfce-desktop \
+  --port=${SSHD_PORT:-8022}:22 \
+  --volume=$PWD/config/xfce-sshd.conf:/etc/ssh/sshd_config.d/xfce-sshd.conf \
+  --port=3389:3389 \
+  --volume=$PWD/config/sesman.ini:/etc/xrdp/sesman.ini \
+  --volume=$PWD/config/startwm.sh:/etc/xrdp/startwm.sh \
+  --volume=$PWD/config/xrdp.ini:/etc/xrdp/xrdp.ini \
+  --volume=$PWD/config/xorg-xdummy.conf:/etc/X11/xrdp/xorg-xdummy.conf \
+  --volume=$PWD/config/xdummy-xorg-startup.sh:/etc/xrdp/xdummy-xorg-startup.sh \
+  --port=5950:5950 \
+  --port=0.0.0.0:${X11VNC_RFBPORT:-5900}:${X11VNC_RFBPORT:-5900} \
+  --tmpfs=/dev/shm \
+  -- \
+  xfce:latest
