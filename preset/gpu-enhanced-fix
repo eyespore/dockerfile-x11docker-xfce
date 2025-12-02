@@ -1,0 +1,3 @@
+share="/dev/dri/card0"
+share="/dev/dri/card1"
+group-add=video

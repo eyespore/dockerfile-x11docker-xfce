@@ -98,4 +98,7 @@ RUN apt-get update
 # or code-insiders
 RUN apt-get install code
 
+# Install Xpra
+RUN curl https://xpra.org/get-xpra.sh | bash
+
 ENV DEBIAN_FRONTEND= http_proxy= https_proxy=

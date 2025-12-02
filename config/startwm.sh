@@ -14,7 +14,6 @@ if test -r ~/.profile; then
         . ~/.profile
 fi
 
-export DISPLAY=:10 XAUTHORITY=~/.Xauthority
 eval "$(dbus-launch --sh-syntax --exit-with-session)"
 
 test -x /etc/X11/Xsession && exec /etc/X11/Xsession

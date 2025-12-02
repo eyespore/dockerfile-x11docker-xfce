@@ -1,0 +1,4 @@
+--runasroot="/usr/sbin/usermod -aG render ${logname}"
+--runasroot="chgrp render /dev/dri/renderD128"
+--gpu
+--group-add=render

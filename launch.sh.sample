@@ -24,6 +24,7 @@ x11docker \
   --runasuser="ibus-daemon -drx" \
   --runasuser="x11vnc -forever -repeat -rfbport ${X11VNC_RFBPORT:-5900} -passwd ${X11VNC_PASSWD:-1234} \&" \
   --runasroot="echo $(logname):${USER_PASSWORD:-1234} | chpasswd" \
+  --gpu \
   -- \
   --hostname=xfce-desktop \
   --publish=${SSHD_PORT:-8022}:22 \
