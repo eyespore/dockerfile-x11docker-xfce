@@ -78,7 +78,7 @@ RUN apt-get update && apt-get install -y dirmngr \
         fonts-noto-cjk \
         fonts-noto-color-emoji
 
-# Install VSCode
+# Install VSCode: Launch with 'code --no-sandbox'
 RUN echo "code code/add-microsoft-repo boolean true" | sudo debconf-set-selections
 RUN apt-get install gpg
 RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && \
@@ -100,5 +100,36 @@ RUN apt-get install code
 
 # Install Xpra
 RUN curl https://xpra.org/get-xpra.sh | bash
+
+# RUN apt-get install -y \
+#     libatomic1 \
+#     libxcb-icccm4 \
+#     libxcb-image0 \
+#     libxcb-render-util0 \
+#     libxcb-keysyms1 \
+#     libxcb-shape0 \
+#     libxcb-xfixes0 \
+#     libxcbcommon-x11-0
+
+# Install WeChat
+# WORKDIR /tmp
+# RUN wget https://dldir1v6.qq.com/weixin/Universal/Linux/WeChatLinux_arm64.deb
+# RUN apt-get install -y ./WeChatLinux_arm64.deb && rm ./WeChatLinux_arm64.deb
+
+# Install QQ: Launch with 'qq --no-sandbox'
+# RUN wget https://dldir1v6.qq.com/qqfile/qq/QQNT/Linux/QQ_3.2.22_251203_arm64_01.deb -O QQLinux_arm64.deb
+# RUN apt-get install -y ./QQLinux_arm64.deb && rm ./QQLinux_arm64.deb
+
+# Install xfreerdp
+RUN apt-get install -y freerdp2-x11
+
+# Install ClipCascade
+RUN apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-gi \
+    xclip \
+    wl-clipboard \
+    dunst
 
 ENV DEBIAN_FRONTEND= http_proxy= https_proxy=
