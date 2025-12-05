@@ -1,18 +1,88 @@
 #!/bin/bash
+
+VALID_OPTIONS=(
+    "--xorg"
+    "--xvfb"
+    "--weston-xwayland"
+    "--test"
+)
+
+DEFAULT_OPTION="--xorg"
+
+if [ $# -eq 0 ]; then
+    MODE="$DEFAULT_OPTION"
+else
+    MODE="$1"
+fi
+
+is_valid=false
+for v in "${VALID_OPTIONS[@]}"; do
+    if [ "$MODE" == "$v" ]; then
+        is_valid=true
+        break
+    fi
+done
+
+if [ "$is_valid" = false ]; then
+    echo "illegal parameter \"$MODE\""
+    echo "Available parameters are: ${VALID_OPTIONS[*]}"
+    exit 1
+fi
+
+case "$MODE" in
+    "--xorg")
+        XMODE="\
+		--xorg \
+                --preset=filesystem-mount \
+		--pulseaudio \
+		"
+	CMD="pulseaudio --start"
+        ;;
+    "--xvfb")
+        XMODE="\
+		--xvfb \
+                --preset=filesystem-mount \
+		"
+        ;;
+    "--weston-xwayland")
+        XMODE="\
+		--weston-xwayland \
+		--gpu \
+                --preset=filesystem-mount \
+		"
+        ;;
+    "--test")
+        XMODE="\
+		--xorg \
+		--share=$HOME/mount/sharev2 \
+		--pulseaudio \
+		"
+        CMODE="\
+	        --volume=$PWD/config/sesman.ini:/etc/xrdp/sesman.ini \
+                --volume=$PWD/config/xrdp.ini:/etc/xrdp/xrdp.ini \
+                --volume=$PWD/config/xorg-xdummy.conf:/etc/X11/xrdp/xorg-xdummy.conf \
+                --volume=$PWD/config/xdummy-xorg-startup.sh:/etc/xrdp/xdummy-xorg-startup.sh \
+		--device /dev/snd \
+		"
+	CMD="pulseaudio --start"
+        ;;
+esac
+
+
 if [ -f .env ]; then
     set -a
     source .env
     set +a
 fi
 
-# make sure pulseaudio process running 
-pulseaudio --start
+${CMD}
 
 # run xfce desktop
+# /home/pineclone/x11docker/x11docker \
 x11docker \
   --xc=no \
+  ${XMODE} \
   --cap-default \
-  --pulseaudio \
   --desktop \
   --name=xfce-desktop \
   --printenv=$HOME/.config/x11docker/xenv \
@@ -21,22 +91,19 @@ x11docker \
   --sudouser=nopasswd \
   --ipc=host \
   --xtest=yes \
+  --xhost="+SI:localuser:$USER" \
   --runasuser="ibus-daemon -drx" \
   --runasuser="x11vnc -forever -repeat -rfbport ${X11VNC_RFBPORT:-5900} -passwd ${X11VNC_PASSWD:-1234} \&" \
   --runasroot="echo $(logname):${USER_PASSWORD:-1234} | chpasswd" \
-  --gpu \
   -- \
   --hostname=xfce-desktop \
   --publish=${SSHD_PORT:-8022}:22 \
   --volume=$PWD/config/xfce-sshd.conf:/etc/ssh/sshd_config.d/xfce-sshd.conf \
   --publish=3389:3389 \
-  --volume=$PWD/config/sesman.ini:/etc/xrdp/sesman.ini \
   --volume=$PWD/config/startwm.sh:/etc/xrdp/startwm.sh \
-  --volume=$PWD/config/xrdp.ini:/etc/xrdp/xrdp.ini \
-  --volume=$PWD/config/xorg-xdummy.conf:/etc/X11/xrdp/xorg-xdummy.conf \
-  --volume=$PWD/config/xdummy-xorg-startup.sh:/etc/xrdp/xdummy-xorg-startup.sh \
   --publish=5950:5950 \
   --publish=0.0.0.0:${X11VNC_RFBPORT:-5900}:${X11VNC_RFBPORT:-5900} \
   --tmpfs=/dev/shm \
+  ${CMODE} \
   -- \
   xfce:latest

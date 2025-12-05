@@ -125,14 +125,15 @@ RUN apt-get install -y freerdp2-x11
 
 # Install Python Environment
 RUN apt-get update
-RUN python3 \
+RUN apt-get install -y \
+    python3 \
     python3-pip \
     python3-gi \
     python3-gi-cairo \
     python3-venv \
     python3-tk
 
-# Install ClipCascade
+# Install ClipCascade: Launch with '/opt/ClipCascade/.venv/bin/python3 /opt/ClipCascade/main.py'
 RUN apt-get install -y \
     xclip \
     wl-clipboard \
@@ -142,15 +143,17 @@ RUN apt-get install -y \
     libopus-dev \
     libvpx-dev
 
-WORKDIR /opt
-RUN wget https://github.com/Sathvik-Rao/ClipCascade/releases/download/3.1.0/ClipCascade_Linux.zip
-RUN unzip ClipCascade_Linux.zip && rm ClipCascade_Linux.zip 
-
-WORKDIR /opt/ClipCascade
-RUN python3 -m venv .venv
-
-ENV TMPDIR=/opt/ClipCascade/tmp
-RUN mkdir -p $TMPDIR && .venv/bin/pip3 install -r requirements.txt
-ENV TMPDIR=
+# Creating ClipCascade Install script
+RUN mkdir -p /opt/scripts
+RUN echo "#/bin/bash\n\
+wget https://github.com/Sathvik-Rao/ClipCascade/releases/download/3.1.0/ClipCascade_Linux.zip\n\
+unzip ClipCascade_Linux.zip && rm ClipCascade_Linux.zip && cd ClipCascade\n\
+python3 -m venv .venv\n\
+export TMPDIR=./tmp\n\
+mkdir -p \$TMPDIR\n\
+.venv/bin/pip3 install -r requirements.txt\n\
+rm -r \$TMPDIR\n\
+" > /opt/scripts/install_clipcascade.sh
+RUN chmod +x /opt/scripts/install_clipcascade.sh
 
 ENV DEBIAN_FRONTEND= http_proxy= https_proxy=
